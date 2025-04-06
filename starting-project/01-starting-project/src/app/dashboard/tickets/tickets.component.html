@@ -2,7 +2,7 @@
   <ul>
     @for(ticket of tickets; track ticket.id){
     <li>
-      <app-ticket [ticket]="ticket" />
+      <app-ticket [ticket]="ticket" (close)="onClosed(ticket.id)" />
     </li>
     }@empty{
     <p>No tickets available.</p>
