@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   OnInit,
+  output,
   viewChild,
   ViewChild,
 } from '@angular/core';
@@ -20,8 +21,10 @@ import { HtmlParser } from '@angular/compiler';
 })
 export class NewTicketComponent implements OnInit, AfterViewInit {
   @ViewChild('form') private form?: ElementRef<HTMLFormElement>;
-  
+
   //private form = viewChild.required<ElementRef<HTMLFormElement>>('form');
+
+  addTicket = output<{ title: string; text: string }>();
 
   //Confirm view child loaded
   ngAfterViewInit(): void {
@@ -36,6 +39,7 @@ export class NewTicketComponent implements OnInit, AfterViewInit {
     console.log('SUBMITTED!');
     console.dir('SUBMITTED TITLE: ' + titleEle);
     console.dir('SUBMITTED TEXT: ' + textEle);
+    this.addTicket.emit({ title: textEle, text: textEle });
     this.form?.nativeElement.reset();
     // this.form()?.nativeElement.reset();
   }
