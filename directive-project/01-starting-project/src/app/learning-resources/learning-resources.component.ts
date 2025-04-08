@@ -6,6 +6,6 @@ import { SafeLinkDirective } from '../safe-link.directive';
   templateUrl: './learning-resources.component.html',
   styleUrl: './learning-resources.component.css',
   standalone: true,
-  imports:[SafeLinkDirective]
+  imports: [SafeLinkDirective],
 })
 export class LearningResourcesComponent {}
