@@ -5,13 +5,13 @@
 
   <app-auth />
 
-  <p *appAuth="'admin'" class="protected-content admin">
+  <p *appAuth="'admin'" class="protected-content admin" appLog>
     Only admins can see this !!
   </p>
-  <p *appAuth="'user'" class="protected-content unauthenticated">
+  <p *appAuth="'user'" class="protected-content unauthenticated" appLog>
     Reagular user can see this !!
   </p>
-  <p *appAuth="'guest'" class="protected-content authenticated">
+  <p *appAuth="'guest'" class="protected-content authenticated" appLog>
     Guest can see this !!
   </p>
 </main>
