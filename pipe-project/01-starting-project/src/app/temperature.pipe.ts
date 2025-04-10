@@ -19,9 +19,9 @@ export class TemperaturePipe implements PipeTransform {
         }
 
         if (outputTemp === 'cel') {
-            return `${calTemp} °C`
+            return `${calTemp.toFixed(2)} °C`
         }
 
-        return `${calTemp} °F`
+        return `${calTemp.toFixed(2)} °F`
     }
 }
