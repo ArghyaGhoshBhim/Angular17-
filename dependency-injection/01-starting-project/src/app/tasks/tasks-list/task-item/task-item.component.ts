@@ -1,8 +1,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { Task, TaskStatus } from '../../task.model';
-import { TaskService } from '../../task.service';
+import { TASK_STATUS_OPTION_TOKEN, Task, TaskStatus, TaskStatusOptions, tokenOptionProvider } from '../../task.model';
 import { TaskServiceToken } from '../../../../main';
 
 @Component({
@@ -11,10 +10,12 @@ import { TaskServiceToken } from '../../../../main';
   imports: [FormsModule],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
+  providers: [tokenOptionProvider]
 })
 export class TaskItemComponent {
   task = input.required<Task>();
   private taskService = inject(TaskServiceToken);
+  taskOptionProviders=inject(TASK_STATUS_OPTION_TOKEN);
 
   taskStatus = computed(() => {
     switch (this.task().status) {
