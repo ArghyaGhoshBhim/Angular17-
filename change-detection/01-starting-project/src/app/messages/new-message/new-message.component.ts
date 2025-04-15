@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
   templateUrl: './new-message.component.html',
   styleUrl: './new-message.component.css',
+  //If we make this onpush and type some thing then count component changedetection will run if we don't make change detection strategy onpush on counter component
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewMessageComponent {
   add = output<string>();
