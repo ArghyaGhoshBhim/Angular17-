@@ -8,11 +8,10 @@ import { InfoMessageComponent } from '../info-message/info-message.component';
   templateUrl: './counter.component.html',
   styleUrl: './counter.component.css',
   imports: [InfoMessageComponent],
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CounterComponent implements OnInit {
   count = signal(0);
-  private zone = inject(NgZone);
   get debugOutput() {
     console.log('[Counter] "debugOutput" binding re-evaluated.');
     return 'Counter Component Debug Output';
@@ -27,11 +26,11 @@ export class CounterComponent implements OnInit {
     //That's the reason we are using zone js and running this outside of the zone js
     //After logging this console change detection will not run
     //This is call avoiding zone polution
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        console.log('Timer expired!');
-      }, 6000);
-    });
+
+    setTimeout(() => {
+      console.log('Timer expired!');
+    }, 6000);
+
   }
   onDecrement() {
     this.count.update((prevCount) => prevCount - 1);

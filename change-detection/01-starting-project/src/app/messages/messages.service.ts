@@ -5,14 +5,13 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class MessagesService {
-  private messages:string[] = [];
-  messages$=new BehaviorSubject<string[]>([]);
+  private messages=signal<string[]>([])
+  allMessages=this.messages.asReadonly();
 
-  get allMessages(){
-    return this.messages
-  }
+  
   addMessage(message: string) {
-    this.messages$.next([...this.messages, message])
-    this.messages=[...this.messages, message]
+   this.messages.update((oldMessages)=>{
+    return [...oldMessages, message]
+   })
   }
 }
