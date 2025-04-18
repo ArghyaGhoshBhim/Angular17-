@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Place } from './place.model';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, tap, throwError } from 'rxjs';
+import { ErrorService } from '../shared/error.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { catchError, map, tap, throwError } from 'rxjs';
 export class PlacesService {
   private userPlaces = signal<Place[]>([]);
   private httpClient = inject(HttpClient);
-
+  private errorService = inject(ErrorService);
   loadedUserPlaces = this.userPlaces.asReadonly();
 
   loadAvailablePlaces() {
@@ -44,6 +45,9 @@ export class PlacesService {
         catchError((err) => {
           return throwError(() => {
             this.userPlaces.set(prevValue);
+            this.errorService.showError(
+              "Can't update favourite due to some internal error!!"
+            );
             return new Error(
               "Can't update favourite due to some internal error!!"
             );
@@ -59,6 +63,7 @@ export class PlacesService {
       map((restData) => restData.places),
       catchError((err) => {
         console.log('Error', err);
+        this.errorService.showError(err);
         return throwError(() => new Error(error));
       })
     );
