@@ -56,7 +56,26 @@ export class PlacesService {
       );
   }
 
-  removeUserPlace(place: Place) {}
+  removeUserPlace(place: Place) {
+    const prevValue = this.userPlaces();
+    if (this.userPlaces().some((p) => p.id === place.id)) {
+      const newFavourites = prevValue.filter((p) => p.id != place.id);
+      this.userPlaces.set(newFavourites);
+    }
+    return this.httpClient
+      .delete(`http://localhost:3000/user-places/${place.id}`)
+      .pipe(
+        catchError((err) => {
+          return throwError(() => {
+            this.userPlaces.set(prevValue);
+            this.errorService.showError(
+              "Can't be delete due to some internal error!!"
+            );
+            return new Error("Can't be delete due to some internal error!!");
+          });
+        })
+      );
+  }
 
   private fetchPlace(url: string, error: string) {
     return this.httpClient.get<{ places: Place[] }>(url).pipe(
