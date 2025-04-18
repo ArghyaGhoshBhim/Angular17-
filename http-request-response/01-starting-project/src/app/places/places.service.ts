@@ -32,10 +32,24 @@ export class PlacesService {
   }
 
   addPlaceToUserPlaces(place: Place) {
-    this.userPlaces.update((prevValue)=>[...prevValue, place])
-    return this.httpClient.put('http://localhost:3000/user-places', {
-      placeId: place.id,
-    });
+    const prevValue = this.userPlaces();
+    if (!this.userPlaces().some((p) => p.id === place.id)) {
+      this.userPlaces.update((prev) => [...prev, place]);
+    }
+    return this.httpClient
+      .put('http://localhost:3000/user-places', {
+        placeId: place.id,
+      })
+      .pipe(
+        catchError((err) => {
+          return throwError(() => {
+            this.userPlaces.set(prevValue);
+            return new Error(
+              "Can't update favourite due to some internal error!!"
+            );
+          });
+        })
+      );
   }
 
   removeUserPlace(place: Place) {}
