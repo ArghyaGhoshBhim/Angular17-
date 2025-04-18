@@ -14,34 +14,29 @@ import { PlacesService } from '../places.service';
   styleUrl: './user-places.component.css',
   imports: [PlacesContainerComponent, PlacesComponent],
 })
-export class UserPlacesComponent implements OnInit{
+export class UserPlacesComponent implements OnInit {
+  isFetching = signal(false);
+  error = signal('');
+  private placeService = inject(PlacesService);
 
-  places = signal<Place[] | undefined>(undefined);
-    isFetching = signal(false);
-    error = signal('');
-    httpClient = inject(HttpClient);
-    private desRef = inject(DestroyRef);
-    private placeService = inject(PlacesService)
-    ngOnInit(): void {
-      this.isFetching.set(true);
-      const subscription = this.placeService.loadUserPlaces()
-        .subscribe({
-          next: (restData) => {
-            this.places.set(restData);
-            console.log(restData);
-          },
-          error: (error) => {
-            // console.log('Error: ', error);
-            // this.error.set('We have some internal issue');
-            this.error.set(error.message);
-          },
-          complete: () => {
-            this.isFetching.set(false);
-          },
-        });
-  
-      this.desRef.onDestroy(() => {
-        subscription.unsubscribe();
-      });
-    }
+  httpClient = inject(HttpClient);
+  private desRef = inject(DestroyRef);
+  places = this.placeService.loadedUserPlaces;
+  ngOnInit(): void {
+    this.isFetching.set(true);
+    const subscription = this.placeService.loadUserPlaces().subscribe({
+      error: (error) => {
+        // console.log('Error: ', error);
+        // this.error.set('We have some internal issue');
+        this.error.set(error.message);
+      },
+      complete: () => {
+        this.isFetching.set(false);
+      },
+    });
+
+    this.desRef.onDestroy(() => {
+      subscription.unsubscribe();
+    });
+  }
 }
