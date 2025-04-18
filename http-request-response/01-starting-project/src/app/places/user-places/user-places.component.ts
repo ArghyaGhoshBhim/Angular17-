@@ -5,6 +5,7 @@ import { PlacesComponent } from '../places.component';
 import { Place } from '../place.model';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, throwError } from 'rxjs';
+import { PlacesService } from '../places.service';
 
 @Component({
   selector: 'app-user-places',
@@ -20,17 +21,10 @@ export class UserPlacesComponent implements OnInit{
     error = signal('');
     httpClient = inject(HttpClient);
     private desRef = inject(DestroyRef);
+    private placeService = inject(PlacesService)
     ngOnInit(): void {
       this.isFetching.set(true);
-      const subscription = this.httpClient
-        .get<{ places: Place[] }>('http://localhost:3000/user-places')
-        .pipe(
-          map((restData) => restData.places),
-          catchError((err) => {
-            console.log('Error', err);
-            return throwError(() => new Error('We have some internal issue to load your favourite'));
-          })
-        )
+      const subscription = this.placeService.loadUserPlaces()
         .subscribe({
           next: (restData) => {
             this.places.set(restData);
