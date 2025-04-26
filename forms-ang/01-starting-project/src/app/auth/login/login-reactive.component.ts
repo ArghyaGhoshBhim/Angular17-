@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { of } from 'rxjs';
 
 function mustContainQuestionMark(control: AbstractControl) {
   if (control.value.includes('?')) {
@@ -13,6 +14,14 @@ function mustContainQuestionMark(control: AbstractControl) {
   }
 
   return { isNotContainsQuestionMarks: true };
+}
+
+function isExistingEmail(control: AbstractControl) {
+  if (control.value !== 'test@gmail.com') {
+    return of(null);
+  }
+
+  return of({ isNotExist: true });
 }
 @Component({
   selector: 'app-login-reactive',
@@ -25,6 +34,7 @@ export class LoginReactiveComponent {
   form = new FormGroup({
     email: new FormControl('', {
       validators: [Validators.required, Validators.email],
+      asyncValidators: [isExistingEmail],
     }),
     password: new FormControl('', {
       validators: [
