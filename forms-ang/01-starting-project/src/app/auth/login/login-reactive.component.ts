@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { of } from 'rxjs';
+import { debounceTime, of } from 'rxjs';
 
 function mustContainQuestionMark(control: AbstractControl) {
   if (control.value.includes('?')) {
@@ -30,7 +30,8 @@ function isExistingEmail(control: AbstractControl) {
   styleUrl: './login.component.css',
   imports: [ReactiveFormsModule],
 })
-export class LoginReactiveComponent {
+export class LoginReactiveComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   form = new FormGroup({
     email: new FormControl('', {
       validators: [Validators.required, Validators.email],
@@ -44,6 +45,29 @@ export class LoginReactiveComponent {
       ],
     }),
   });
+
+  ngOnInit(): void {
+    const savedForm = window.localStorage.getItem('save-reactive-form');
+
+    if (savedForm) {
+      this.form.patchValue({
+        email: JSON.parse(savedForm).email,
+      });
+    }
+
+    const subscription = this.form.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe({
+        next: (value) => {
+          window.localStorage.setItem(
+            'save-reactive-form',
+            JSON.stringify({ email: value.email })
+          );
+        },
+      });
+
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
+  }
 
   get validateEmail() {
     return (
