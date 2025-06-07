@@ -1,5 +1,13 @@
-import { Component, computed, inject, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+} from '@angular/core';
 import { UsersService } from '../users.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-tasks',
@@ -7,10 +15,25 @@ import { UsersService } from '../users.service';
   templateUrl: './user-tasks.component.html',
   styleUrl: './user-tasks.component.css',
 })
-export class UserTasksComponent {
-  userId = input.required<string>();
+export class UserTasksComponent implements OnInit {
+  // userId = input.required<string>();
   userService = inject(UsersService);
-  userName = computed(
-    () => this.userService.users.find((user) => user.id === this.userId())?.name
-  );
+  private activatedRoute = inject(ActivatedRoute);
+  private destroy = inject(DestroyRef);
+  userName = '';
+
+  // userName = computed(
+  //   () => this.userService.users.find((user) => user.id === this.userId())?.name
+  // );
+
+  ngOnInit(): void {
+    console.log(this.activatedRoute);
+    const subscription = this.activatedRoute.paramMap.subscribe((param) => {
+      this.userName =
+        this.userService.users.find((user) => user.id === param.get('userId'))
+          ?.name || '';
+    });
+
+    this.destroy.onDestroy(() => subscription.unsubscribe());
+  }
 }
