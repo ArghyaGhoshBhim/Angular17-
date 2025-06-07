@@ -13,7 +13,6 @@ import { TasksService } from '../tasks.service';
   imports: [DatePipe, CardComponent],
 })
 export class TaskComponent {
-  userId = input.required<string>();
   task = input.required<Task>();
   private tasksService = inject(TasksService);
 
