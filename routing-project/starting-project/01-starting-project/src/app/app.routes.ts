@@ -18,7 +18,7 @@ export const routes: Route[] = [
         component: TasksComponent,
       },
       {
-        path: 'task/new',
+        path: 'tasks/new',
         component: NewTaskComponent,
       },
     ],
